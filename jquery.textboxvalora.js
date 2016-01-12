@@ -14,6 +14,9 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer�
 	var txt_miss_param 					= 'Falta el parámetro "%s"';
 	var txt_must_be_string 				= '"%s" debe ser un string.';
 	var txt_must_be_object 				= '"%s" debe ser un objeto.';
+	var txt_must_be_boolean 			= '"%s" debe ser boolean.';
+	var txt_must_be_function 			= '"%s" debe ser una función.';
+	var txt_must_be_numeric 			= '"%s" debe ser númerico.';
 	var txt_no_element_found 			= 'No se encontró ningún elemento para reemplazar.';
 	var txt_create_editor_instance 		= 'Se crea instancia de editor en "%s"';
 	var txt_save_content_in 	 		= 'Se guarda contenido en elemento "%s"';
@@ -371,6 +374,32 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer�
 		}
 	}
 
+	var validate_options = function() {
+		if (typeof settings.debug_mode !== 'boolean')
+			throw new Error(txt_must_be_boolean.replace('%s','debug_mode'));
+
+		if (typeof settings.toolbar !== 'string')
+			throw new Error(txt_must_be_string.replace('%s','toolbar'));
+
+		if (typeof settings.img_upload_url !== 'string')
+			throw new Error(txt_must_be_string.replace('%s','img_upload_url'));
+
+		if (typeof settings.img_upload_response['success'] !== 'function')
+			throw new Error(txt_must_be_function.replace('%s','img_upload_response.success'));
+
+		if (typeof settings.img_upload_response['fail'] !== 'function')
+			throw new Error(txt_must_be_function.replace('%s','img_upload_response.fail'));
+
+		if (typeof settings.resize_uploaded_img['enabled'] !== 'boolean')
+			throw new Error(txt_must_be_boolean.replace('%s','resize_uploaded_img.enabled'));
+
+		if (typeof settings.resize_uploaded_img['maxWidth'] !== 'number')
+			throw new Error(txt_must_be_numeric.replace('%s','resize_uploaded_img.maxWidth'));
+
+		if (typeof settings.resize_uploaded_img['maxHeight'] !== 'number')
+			throw new Error(txt_must_be_numeric.replace('%s','resize_uploaded_img.maxHeight'));
+	}
+
 	// Corrección de errores
 	var fixIssues = function() {
 	}
@@ -398,31 +427,36 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer�
 			if (editors.length > 0)
 			{
 				$.each(editors,function(i,e){
-					// console.log($(document).find(e.element()));
-					r = $(document).find(e.element()).parent();
-					if (r.length > 0)
+					if (e.content.isDirty())
 					{
-						t = r.next();
-						c = e.content.get();
-						if (/TEXTAREA/i.test(t[0].nodeName))
+						console.log($(document).find(e.element()));
+						container = $(document).find(e.element()).parent();
+						if (container.length > 0)
 						{
-							t[0].innerHTML = c;
-						
-							if (settings.debug_mode)
+							txtarea = container.next();
+							content = e.content.get();
+							if (/TEXTAREA/i.test(txtarea[0].nodeName))
 							{
-								debug(txt_save_content_in.replace('%s',t[0].nodeName));
-								debug(t[0]);
+								txtarea[0].innerHTML = content;
+							
+								if (settings.debug_mode)
+								{
+									debug(txt_save_content_in.replace('%s',txtarea[0].nodeName));
+									debug(txtarea[0]);
+								}
 							}
-						}
-						else
-						{
-							if (settings.debug_mode)
+							else
 							{
-								// debug(txt_element_save_not_allowed);
-								// debug(t[0]);
+								if (settings.debug_mode)
+								{
+									// debug(txt_element_save_not_allowed);
+									// debug(txtarea[0]);
+								}
 							}
+
 						}
 
+						e.content.setDirty(false);
 					}
 				});
 			}
@@ -447,6 +481,8 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer�
 			settings = $.extend(true, {}, defaults, o);
 			// Obtenemos el toolbar del editor
 			setEditorUiToolbar();
+			// Última revisión de las configuraciones
+			validate_options();
 			// Corrige problemas de compatibilidad del plugin
 			// fixIssues();
 
