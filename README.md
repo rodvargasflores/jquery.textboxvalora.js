@@ -19,7 +19,7 @@
     </tr>
     <tr>
       <td colspan="1">
-        <code><span><a href="#TriggerSave">triggerSave</a><br></span></code>
+        <code><span><a href="#triggersave">triggerSave</a><br></span></code>
       </td>
       <td colspan="1">
         Recorre los elementos reemplazados por el editor y guarda su contenido en el elemento original.
