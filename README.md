@@ -19,7 +19,7 @@
     </tr>
     <tr>
       <td colspan="1">
-        <code><span><a href="#triggerSave">triggerSave</a><br></span></code>
+        <code><span><a href="#TriggerSave">triggerSave</a><br></span></code>
       </td>
       <td colspan="1">
         Recorre los elementos reemplazados por el editor y guarda su contenido en el elemento original.
@@ -115,6 +115,33 @@ Cuando se reemplaza un elemento <code>&lt;textarea&gt;</code> al interior de un 
       </td>
       <td colspan="1">Objeto</td>
       <td>Instancia única del editor.</td>
+    </tr>
+  </tbody>
+</table>
+
+## TriggerSave
+Actualiza todos los elementos originales, con el contenido actual del editor, que coincidan con el selector proporcionado. <strong>Sólo se guardará el contenido en elementos de tipo <code>&lt;textarea&gt;</code></strong>.
+
+####Ejemplos<br>
+<strong>textboxValora.triggerSave(selector)</strong>
+```javascript
+	// Actualiza todos los elementos originales que coincidan con la clase css 'editores'
+	textboxValora.triggerSave( '.editores' );
+```
+#### Parámetros
+<table>
+  <tbody>
+    <tr>
+      <td>
+        <span style="color: rgb(0,0,0);"><code>selector</code></span>
+      </td>
+      <td colspan="1">
+        String
+      </td>
+      <td>
+	Especifica un <a href="http://www.w3.org/TR/css3-selectors/" target="_blank" rel="nofollow">selector CSS3</a> <span>que representa el elemento o elementos que contienen instancias del editor.
+	</span>
+      </td>
     </tr>
   </tbody>
 </table>
