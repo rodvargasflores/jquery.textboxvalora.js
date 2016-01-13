@@ -6,7 +6,7 @@ Autor: Real Ace One
 if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√≠a JQuery') };
 
 ! (function(){
-	// "use strict";
+	"use strict";
 
 	/** Variables de texto **/
 	var txt_library_name 				= 'Textboxio';
@@ -186,13 +186,13 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
 			{
 				try
 				{
-					textboxio.replace(v,settings.config);
+					var editor = textboxio.replace(v,settings.config);
 				}
 				catch(e)
 				{
 					if (w.textboxio && !settings.config['basePath'])
 						settings.config['basePath'] = textboxio_basePath;
-					textboxio.replace(v,settings.config);
+					var editor = textboxio.replace(v,settings.config);
 				}
 
 				if (settings.debug_mode)
@@ -200,6 +200,18 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
 					debug(txt_create_editor_instance.replace('%s',v.nodeName));
 					debug(v);
 				}
+
+				// Agregamos el target (textarea) original en un data con el elemento del editor asignado
+				editor.events.loaded.addListener(function(){
+					if (/TEXTAREA/i.test(v.nodeName))
+						$.data(editor.element(),'element',v);
+				});
+
+				// Agregamos el target (textarea) original en un data con el elemento del editor asignado
+				editor.events.focus.addListener(function(){
+					if (/TEXTAREA/i.test(v.nodeName))
+						$.data(editor.element(),'element',v);
+				});
 			}
 			else
 				throw new Error(txt_element_not_allowed);
@@ -221,13 +233,13 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
 				// var dataUrl         = canvas.toDataURL('image/jpg');
 				// var dataUrl         = canvas.toDataURL('image/png');
 
-				dataUrl 		= canvas.toDataURL();
-				resizedImage 	= dataURLToBlob(dataUrl);
+				var dataUrl 		= canvas.toDataURL();
+				var resizedImage 	= dataURLToBlob(dataUrl);
 
 				formData.append('file', resizedImage);
 				formData.append('name', dataFilename);
 
-				jqxhr = $.ajax({
+				var jqxhr = $.ajax({
 					url: settings.img_upload_url,
 					type: 'POST',
 					dataType: 'json',
@@ -252,8 +264,8 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
         var resizeImg 	= (settings.resize_uploaded_img['enabled'] && imgWidth > maxWidth) ? true : false;
 
         var ratio 		= 1, ratio1 = 1, ratio2 = 1;
-        ratio1 			= maxWidth / imgWidth;
-        ratio2 			= maxHeight / imgHeight;
+        var ratio1 		= maxWidth / imgWidth;
+        var ratio2 		= maxHeight / imgHeight;
 
         // Usamos el ratio m√°s peque√±o posible para que la imagen
         // encaje de mejor manera dentro del maxWidth x maxHeight.
@@ -425,39 +437,45 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
 			if (typeof selector !== 'string')
 				throw new Error(txt_must_be_string.replace('%s','Selector'));
 
-			editors = v.get(selector);
+			var editors = v.get(selector);
 			if (editors.length > 0)
 			{
 				$.each(editors,function(i,e){
 					if (e.content.isDirty())
 					{
-						// console.log($.data(document.body,e));
-						container = $(document).find(e.element()).parent();
-						if (container.length > 0)
+						var container = $.data(e.element(),'element');
+						if (typeof container === 'object')
 						{
-							txtarea = container.next();
-							content = e.content.get();
-							if (/TEXTAREA/i.test(txtarea[0].nodeName))
+							var content = e.content.get();
+							if (/TEXTAREA/i.test(container.nodeName))
 							{
-								txtarea[0].innerHTML = content;
+								container.innerHTML = content;
 							
 								if (settings.debug_mode)
 								{
-									debug(txt_save_content_in.replace('%s',txtarea[0].nodeName));
-									debug(txtarea[0]);
+									debug(txt_save_content_in.replace('%s',container.nodeName));
+									debug(container);
 								}
 							}
 							else
 							{
 								if (settings.debug_mode)
 								{
-									// debug(txt_element_save_not_allowed);
-									// debug(txtarea[0]);
+									debug(txt_element_save_not_allowed);
+									debug(container);
 								}
 							}
-
+						}
+						else
+						{
+							if (settings.debug_mode)
+							{
+								debug(txt_element_save_not_allowed);
+								debug(container);
+							}
 						}
 
+						// Limpiamos la variable de la instancia del editor
 						e.content.setDirty(false);
 					}
 				});
@@ -524,10 +542,11 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
 	}
 	/** FIN DE LAS FUNCIONES DEL PLUGIN **/
 
-	/** PROTEGEMOS LA VARIABLE GLOBAL **/
+	/** PROTECCIONES **/
+	// PROTEGEMOS LA VARIABLE GLOBAL
 	Object.preventExtensions(v);
 
-	// PROTEGEMOS LOS ELEMENTOS INTERNOS????
+	// PROTEGEMOS LOS ELEMENTOS INTERNOS
 	Object.defineProperty(v, 'get', {
 		writable: false,
 		configurable: false,
