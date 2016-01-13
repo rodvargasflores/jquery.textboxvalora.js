@@ -219,7 +219,7 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
 	}
 
 	var uploadEditorHandler = function (dataBlob, dataFilename, callback) {
-		var resizedImage, jqxhr;
+		var resizedImage, jqxhr, dataURL;
 		var formData  = new FormData();
 
 		// Cargamos la imagen
@@ -233,13 +233,13 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
 				// var dataUrl         = canvas.toDataURL('image/jpg');
 				// var dataUrl         = canvas.toDataURL('image/png');
 
-				var dataUrl 		= canvas.toDataURL();
-				var resizedImage 	= dataURLToBlob(dataUrl);
+				dataURL 		= canvas.toDataURL();
+				resizedImage 	= dataURLToBlob(dataURL);
 
 				formData.append('file', resizedImage);
 				formData.append('name', dataFilename);
 
-				var jqxhr = $.ajax({
+				jqxhr = $.ajax({
 					url: settings.img_upload_url,
 					type: 'POST',
 					dataType: 'json',
