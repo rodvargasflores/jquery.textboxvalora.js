@@ -5,7 +5,9 @@ Autor: Real Ace One
 */
 if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√≠a JQuery') };
 
-(function($){
+! (function(){
+	// "use strict";
+
 	/** Variables de texto **/
 	var txt_library_name 				= 'Textboxio';
 	var txt_fail_ajax_load_js 			= 'No se puede cargar la librer√≠a '+txt_library_name+' %s';
@@ -47,7 +49,7 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
 	}
 
 	var getDefaults = function() {
-		d = {
+		var d = {
 			debug_mode : false,
 			toolbar : 'normal',
 			img_upload_url : '/default/subir-complemento/',
@@ -429,7 +431,7 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
 				$.each(editors,function(i,e){
 					if (e.content.isDirty())
 					{
-						console.log($(document).find(e.element()));
+						// console.log($.data(document.body,e));
 						container = $(document).find(e.element()).parent();
 						if (container.length > 0)
 						{
@@ -522,6 +524,27 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
 	}
 	/** FIN DE LAS FUNCIONES DEL PLUGIN **/
 
+	/** PROTEGEMOS LA VARIABLE GLOBAL **/
+	Object.preventExtensions(v);
+
+	// PROTEGEMOS LOS ELEMENTOS INTERNOS????
+	Object.defineProperty(v, 'get', {
+		writable: false,
+		configurable: false,
+		enumerable: true
+	});
+	Object.defineProperty(v, 'triggerSave', {
+		writable: false,
+		configurable: false,
+		enumerable: true
+	});
+	Object.defineProperty(v, 'replace', {
+		writable: false,
+		configurable: false,
+		enumerable: true
+	});
+	/** FIN DE LAS PROTECCIONES **/
+
 	// Publicamos la variable global de acceso al plugin
 	w.textboxValora = v;
-}(jQuery));
+}(this));
