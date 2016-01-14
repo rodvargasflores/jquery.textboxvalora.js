@@ -1,5 +1,5 @@
 /*
-TextBox v0.1.1
+TextBox v0.2.3
 Plugin que sirve para precargar la librería textboxio de ephox de acuerdo a estándar de ecosistema VALORA
 Autor: Real Ace One
 */
@@ -24,7 +24,8 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer�
 	var txt_save_content_in 	 		= 'Se guarda contenido en elemento "%s"';
 	var txt_library_not_found 			= 'No se encuentra la librería '+txt_library_name+'. Se intentará cargar dinámicamente.';
 	var txt_success_library_load		= 'Se cargó exitosamente la librería '+txt_library_name+'.';
-	var txt_toolbar_setup 				= 'Se cargó la barra de tareas en modo "%s"';
+	var txt_toolbar_setup 				= 'Se cargó la barra de herramientas en modo "%s"';
+	var txt_load_editor_gui 	 		= 'Se carga GUI del editor.';
 	var txt_success_file_upload			= 'Se cargó el archivo en el servidor con ruta de acceso "%s"';
 	var txt_element_save_not_allowed 	= 'El elemento en que se intenta guardar el contenido del editor no está permitido.';
 	var txt_element_not_allowed 		= 'Sólo se permiten elementos de tipo DIV o TEXTAREA.';
@@ -205,6 +206,9 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer�
 				editor.events.loaded.addListener(function(){
 					if (/TEXTAREA/i.test(v.nodeName))
 						$.data(editor.element(),'element',v);
+
+					if (settings.debug_mode)
+						debug(txt_load_editor_gui);
 				});
 
 				// Agregamos el target (textarea) original en un data con el elemento del editor asignado
