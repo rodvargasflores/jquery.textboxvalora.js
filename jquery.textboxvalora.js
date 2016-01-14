@@ -1,11 +1,13 @@
 /*
-TextBox v0.1.1
+TextBox v0.2.3
 Plugin que sirve para precargar la librería textboxio de ephox de acuerdo a estándar de ecosistema VALORA
 Autor: Real Ace One
 */
 if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librería JQuery') };
 
-(function($){
+! (function(){
+	"use strict";
+
 	/** Variables de texto **/
 	var txt_library_name 				= 'Textboxio';
 	var txt_fail_ajax_load_js 			= 'No se puede cargar la librería '+txt_library_name+' %s';
@@ -14,12 +16,16 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer�
 	var txt_miss_param 					= 'Falta el parámetro "%s"';
 	var txt_must_be_string 				= '"%s" debe ser un string.';
 	var txt_must_be_object 				= '"%s" debe ser un objeto.';
+	var txt_must_be_boolean 			= '"%s" debe ser boolean.';
+	var txt_must_be_function 			= '"%s" debe ser una función.';
+	var txt_must_be_numeric 			= '"%s" debe ser númerico.';
 	var txt_no_element_found 			= 'No se encontró ningún elemento para reemplazar.';
 	var txt_create_editor_instance 		= 'Se crea instancia de editor en "%s"';
 	var txt_save_content_in 	 		= 'Se guarda contenido en elemento "%s"';
 	var txt_library_not_found 			= 'No se encuentra la librería '+txt_library_name+'. Se intentará cargar dinámicamente.';
 	var txt_success_library_load		= 'Se cargó exitosamente la librería '+txt_library_name+'.';
-	var txt_toolbar_setup 				= 'Se cargó la barra de tareas en modo "%s"';
+	var txt_toolbar_setup 				= 'Se cargó la barra de herramientas en modo "%s"';
+	var txt_load_editor_gui 	 		= 'Se carga GUI del editor.';
 	var txt_success_file_upload			= 'Se cargó el archivo en el servidor con ruta de acceso "%s"';
 	var txt_element_save_not_allowed 	= 'El elemento en que se intenta guardar el contenido del editor no está permitido.';
 	var txt_element_not_allowed 		= 'Sólo se permiten elementos de tipo DIV o TEXTAREA.';
@@ -44,7 +50,7 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer�
 	}
 
 	var getDefaults = function() {
-		d = {
+		var d = {
 			debug_mode : false,
 			toolbar : 'normal',
 			img_upload_url : '/default/subir-complemento/',
@@ -181,13 +187,13 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer�
 			{
 				try
 				{
-					textboxio.replace(v,settings.config);
+					var editor = textboxio.replace(v,settings.config);
 				}
 				catch(e)
 				{
 					if (w.textboxio && !settings.config['basePath'])
 						settings.config['basePath'] = textboxio_basePath;
-					textboxio.replace(v,settings.config);
+					var editor = textboxio.replace(v,settings.config);
 				}
 
 				if (settings.debug_mode)
@@ -195,6 +201,21 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer�
 					debug(txt_create_editor_instance.replace('%s',v.nodeName));
 					debug(v);
 				}
+
+				// Agregamos el target (textarea) original en un data con el elemento del editor asignado
+				editor.events.loaded.addListener(function(){
+					if (/TEXTAREA/i.test(v.nodeName))
+						$.data(editor.element(),'element',v);
+
+					if (settings.debug_mode)
+						debug(txt_load_editor_gui);
+				});
+
+				// Agregamos el target (textarea) original en un data con el elemento del editor asignado
+				editor.events.focus.addListener(function(){
+					if (/TEXTAREA/i.test(v.nodeName))
+						$.data(editor.element(),'element',v);
+				});
 			}
 			else
 				throw new Error(txt_element_not_allowed);
@@ -202,7 +223,7 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer�
 	}
 
 	var uploadEditorHandler = function (dataBlob, dataFilename, callback) {
-		var resizedImage, jqxhr;
+		var resizedImage, jqxhr, dataURL;
 		var formData  = new FormData();
 
 		// Cargamos la imagen
@@ -216,8 +237,8 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer�
 				// var dataUrl         = canvas.toDataURL('image/jpg');
 				// var dataUrl         = canvas.toDataURL('image/png');
 
-				dataUrl 		= canvas.toDataURL();
-				resizedImage 	= dataURLToBlob(dataUrl);
+				dataURL 		= canvas.toDataURL();
+				resizedImage 	= dataURLToBlob(dataURL);
 
 				formData.append('file', resizedImage);
 				formData.append('name', dataFilename);
@@ -247,8 +268,8 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer�
         var resizeImg 	= (settings.resize_uploaded_img['enabled'] && imgWidth > maxWidth) ? true : false;
 
         var ratio 		= 1, ratio1 = 1, ratio2 = 1;
-        ratio1 			= maxWidth / imgWidth;
-        ratio2 			= maxHeight / imgHeight;
+        var ratio1 		= maxWidth / imgWidth;
+        var ratio2 		= maxHeight / imgHeight;
 
         // Usamos el ratio más pequeño posible para que la imagen
         // encaje de mejor manera dentro del maxWidth x maxHeight.
@@ -371,6 +392,32 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer�
 		}
 	}
 
+	var validate_options = function() {
+		if (typeof settings.debug_mode !== 'boolean')
+			throw new Error(txt_must_be_boolean.replace('%s','debug_mode'));
+
+		if (typeof settings.toolbar !== 'string')
+			throw new Error(txt_must_be_string.replace('%s','toolbar'));
+
+		if (typeof settings.img_upload_url !== 'string')
+			throw new Error(txt_must_be_string.replace('%s','img_upload_url'));
+
+		if (typeof settings.img_upload_response['success'] !== 'function')
+			throw new Error(txt_must_be_function.replace('%s','img_upload_response.success'));
+
+		if (typeof settings.img_upload_response['fail'] !== 'function')
+			throw new Error(txt_must_be_function.replace('%s','img_upload_response.fail'));
+
+		if (typeof settings.resize_uploaded_img['enabled'] !== 'boolean')
+			throw new Error(txt_must_be_boolean.replace('%s','resize_uploaded_img.enabled'));
+
+		if (typeof settings.resize_uploaded_img['maxWidth'] !== 'number')
+			throw new Error(txt_must_be_numeric.replace('%s','resize_uploaded_img.maxWidth'));
+
+		if (typeof settings.resize_uploaded_img['maxHeight'] !== 'number')
+			throw new Error(txt_must_be_numeric.replace('%s','resize_uploaded_img.maxHeight'));
+	}
+
 	// Corrección de errores
 	var fixIssues = function() {
 	}
@@ -394,35 +441,46 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer�
 			if (typeof selector !== 'string')
 				throw new Error(txt_must_be_string.replace('%s','Selector'));
 
-			editors = v.get(selector);
+			var editors = v.get(selector);
 			if (editors.length > 0)
 			{
 				$.each(editors,function(i,e){
-					// console.log($(document).find(e.element()));
-					r = $(document).find(e.element()).parent();
-					if (r.length > 0)
+					if (e.content.isDirty())
 					{
-						t = r.next();
-						c = e.content.get();
-						if (/TEXTAREA/i.test(t[0].nodeName))
+						var container = $.data(e.element(),'element');
+						if (typeof container === 'object')
 						{
-							t[0].innerHTML = c;
-						
-							if (settings.debug_mode)
+							var content = e.content.get();
+							if (/TEXTAREA/i.test(container.nodeName))
 							{
-								debug(txt_save_content_in.replace('%s',t[0].nodeName));
-								debug(t[0]);
+								container.innerHTML = content;
+							
+								if (settings.debug_mode)
+								{
+									debug(txt_save_content_in.replace('%s',container.nodeName));
+									debug(container);
+								}
+							}
+							else
+							{
+								if (settings.debug_mode)
+								{
+									debug(txt_element_save_not_allowed);
+									debug(container);
+								}
 							}
 						}
 						else
 						{
 							if (settings.debug_mode)
 							{
-								// debug(txt_element_save_not_allowed);
-								// debug(t[0]);
+								debug(txt_element_save_not_allowed);
+								debug(container);
 							}
 						}
 
+						// Limpiamos la variable de la instancia del editor
+						e.content.setDirty(false);
 					}
 				});
 			}
@@ -447,6 +505,8 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer�
 			settings = $.extend(true, {}, defaults, o);
 			// Obtenemos el toolbar del editor
 			setEditorUiToolbar();
+			// Última revisión de las configuraciones
+			validate_options();
 			// Corrige problemas de compatibilidad del plugin
 			// fixIssues();
 
@@ -486,6 +546,28 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer�
 	}
 	/** FIN DE LAS FUNCIONES DEL PLUGIN **/
 
+	/** PROTECCIONES **/
+	// PROTEGEMOS LA VARIABLE GLOBAL
+	Object.preventExtensions(v);
+
+	// PROTEGEMOS LOS ELEMENTOS INTERNOS
+	Object.defineProperty(v, 'get', {
+		writable: false,
+		configurable: false,
+		enumerable: true
+	});
+	Object.defineProperty(v, 'triggerSave', {
+		writable: false,
+		configurable: false,
+		enumerable: true
+	});
+	Object.defineProperty(v, 'replace', {
+		writable: false,
+		configurable: false,
+		enumerable: true
+	});
+	/** FIN DE LAS PROTECCIONES **/
+
 	// Publicamos la variable global de acceso al plugin
 	w.textboxValora = v;
-}(jQuery));
+}(this));
