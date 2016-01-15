@@ -1,4 +1,4 @@
-# Plugin textboxValora
+# Plugin textboxValora v0.2.3
 <p>Plugin que sirve para precargar la librería <a href="https://textbox.io/" target="_blank" rel="nofollow">textboxio</a> de ephox de acuerdo a estándar de ecosistema VALORA.</p>
 <p>El plugin registra una variable global de JavaScript para acceder a sus métodos. Esta variable global, denominada <strong>textboxValora</strong>, se encuentra disponible una vez que se haya cargado el plugin.</p>
 <p><strong>No es necesario tener cargada la librería de textboxio al momento de cargar el documento</strong>. El plugin identificará si existe la instancia. En caso no existir, intentará cargarla de manera dinámica. Para esto, la librería debe estar en la ruta predeterminada de plugins de ecosistema VALORA: <code><strong>/assets/vendor/plugins/textboxio/textboxio.js</strong></code></p>
@@ -19,7 +19,7 @@
     </tr>
     <tr>
       <td colspan="1">
-        <code><span><a href="#triggerSave">triggerSave</a><br></span></code>
+        <code><span><a href="#triggersave">triggerSave</a><br></span></code>
       </td>
       <td colspan="1">
         Recorre los elementos reemplazados por el editor y guarda su contenido en el elemento original.
@@ -115,6 +115,33 @@ Cuando se reemplaza un elemento <code>&lt;textarea&gt;</code> al interior de un 
       </td>
       <td colspan="1">Objeto</td>
       <td>Instancia única del editor.</td>
+    </tr>
+  </tbody>
+</table>
+
+## TriggerSave
+Actualiza todos los elementos originales, con el contenido actual del editor, que coincidan con el selector proporcionado. <strong>Sólo se guardará el contenido en elementos de tipo <code>&lt;textarea&gt;</code></strong>.
+
+####Ejemplos<br>
+<strong>textboxValora.triggerSave(selector)</strong>
+```javascript
+	// Actualiza todos los elementos originales que coincidan con la clase css 'editores'
+	textboxValora.triggerSave( '.editores' );
+```
+#### Parámetros
+<table>
+  <tbody>
+    <tr>
+      <td>
+        <span style="color: rgb(0,0,0);"><code>selector</code></span>
+      </td>
+      <td colspan="1">
+        String
+      </td>
+      <td>
+	Especifica un <a href="http://www.w3.org/TR/css3-selectors/" target="_blank" rel="nofollow">selector CSS3</a> <span>que representa el elemento o elementos que contienen instancias del editor.
+	</span>
+      </td>
     </tr>
   </tbody>
 </table>
@@ -235,4 +262,4 @@ Todas las propiedades son opcionales. Definir alguna sobreescribirá la opción 
 </table>
 
 ## Problemas conocidos (Known Issues)
-- Al estar el editor en modo de pantalla completa y ejecutar el método <strong>textboxValora.triggerSave(selector)</strong>, el plugin arroja error de nodeName.
+- Ninguno en esta versión
