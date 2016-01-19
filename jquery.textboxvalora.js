@@ -1,5 +1,5 @@
 /*
-TextBox v0.2.3
+TextBox v0.3.5
 Plugin que sirve para precargar la librer√≠a textboxio de ephox de acuerdo a est√°ndar de ecosistema VALORA
 Autor: Real Ace One
 */
@@ -53,6 +53,8 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
 		var d = {
 			debug_mode : false,
 			toolbar : 'normal',
+			autoresize : false,
+			init_height : 200,
 			img_upload_url : '/default/subir-complemento/',
 			img_upload_response : {
 				success: function(json, textStatus, jqXHR){},
@@ -204,17 +206,67 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
 
 				// Agregamos el target (textarea) original en un data con el elemento del editor asignado
 				editor.events.loaded.addListener(function(){
+					var edDocument 		= editor.content.documentElement();
+					var edBody 			= edDocument.body;
+					var edElement 		= editor.element();
+					var edParentElement = $(document).find(edElement).parent();
+
 					if (/TEXTAREA/i.test(v.nodeName))
 						$.data(editor.element(),'element',v);
 
 					if (settings.debug_mode)
 						debug(txt_load_editor_gui);
+
+					if (settings.autoresize)
+					{
+						var edBodyHeight 	= (edBody.offsetHeight + 81);
+
+						// Aplicamos el height dado por el cliente o el default
+						if (edBodyHeight > settings.init_height)
+							edParentElement.height(edBodyHeight);
+						else
+							edParentElement.height(settings.init_height);
+					}
+					else
+						edParentElement.height(settings.init_height);
 				});
 
 				// Agregamos el target (textarea) original en un data con el elemento del editor asignado
 				editor.events.focus.addListener(function(){
 					if (/TEXTAREA/i.test(v.nodeName))
 						$.data(editor.element(),'element',v);
+				});
+
+				editor.events.dirty.addListener(function(){
+					if (settings.autoresize)
+					{
+						if (/TEXTAREA/i.test(v.nodeName))
+						{
+							var edElement 		= editor.element();
+							var edParentElement = $(document).find(edElement).parent();
+
+							var timer = setInterval(function(){
+								try
+								{
+									var edDocument 		= editor.content.documentElement();
+									var edHtml 			= edDocument.querySelector('html');
+									var edBody 			= edDocument.querySelector('body');
+									var edBodyHeight 	= (edBody.offsetHeight + 71);
+
+									edHtml.style.minHeight 	= 'inherit';
+									edHtml.style.height 	= 'inherit';
+									edBody.style.minHeight 	= (settings.init_height - 41)+'px';
+									// edBody.style.overflowx 	= 'hidden';
+
+									if (edBodyHeight > settings.init_height)
+										edParentElement.height(edBodyHeight);
+									else
+										edParentElement.height(settings.init_height);
+								}
+								catch(e){}
+							},500);
+						}
+					}
 				});
 			}
 			else
@@ -399,6 +451,12 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
 		if (typeof settings.toolbar !== 'string')
 			throw new Error(txt_must_be_string.replace('%s','toolbar'));
 
+		if (typeof settings.autoresize !== 'boolean')
+			throw new Error(txt_must_be_boolean.replace('%s','autoresize'));
+
+		if (typeof settings.init_height !== 'number')
+			throw new Error(txt_must_be_numeric.replace('%s','init_height'));
+
 		if (typeof settings.img_upload_url !== 'string')
 			throw new Error(txt_must_be_string.replace('%s','img_upload_url'));
 
@@ -491,8 +549,8 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
 			if (arguments.length == 0)
 				throw new Error(txt_miss_param.replace('%s','selector'));
 
-			if (typeof e !== 'string')
-				throw new Error(txt_must_be_string.replace('%s','Selector'));
+			// if (typeof e !== 'string')
+			// 	throw new Error(txt_must_be_string.replace('%s','Selector'));
 
 			if (typeof o !== 'undefined' && typeof o !== 'object')
 			 	throw new Error(txt_must_be_object.replace('%s','Argument 2'));
