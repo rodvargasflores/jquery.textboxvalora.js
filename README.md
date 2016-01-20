@@ -295,6 +295,6 @@ Todas las propiedades son opcionales. Definir alguna sobreescribirá la opción 
 - Es posible ahora especificar la variable <code>autoresize</code> la cual permite dar la habilidad al editor de aumentar el tamaño de la caja al ir escribiendo.
 - Se agrega variable <code>init_height</code> que permite especificar un alto de la caja del editor personalizado al iniciar la carga por primera vez.
 
-#### Corrección de errores
+##### Corrección de errores
 - Se soluciona error en el alto de la caja del editor, que ocasionaba que en algunas instancias, quedara con un height muy pequeño.
 - Se corrige problema que sólo permitía al método <code>replace</code> trabajar con un <code>string</code> y no así un objeto.
