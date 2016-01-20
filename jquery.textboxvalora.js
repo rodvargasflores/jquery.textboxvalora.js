@@ -549,8 +549,8 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
 			if (arguments.length == 0)
 				throw new Error(txt_miss_param.replace('%s','selector'));
 
-			// if (typeof e !== 'string')
-			// 	throw new Error(txt_must_be_string.replace('%s','Selector'));
+			if (typeof e === 'undefined' || typeof e === 'number')
+				throw new Error(txt_must_be_string.replace('%s','Selector')+' o '+txt_must_be_object.replace('%s','Selector'));
 
 			if (typeof o !== 'undefined' && typeof o !== 'object')
 			 	throw new Error(txt_must_be_object.replace('%s','Argument 2'));
