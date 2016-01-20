@@ -1,4 +1,4 @@
-# Plugin textboxValora v0.2.3
+# Plugin textboxValora v0.3.5
 <p>Plugin que sirve para precargar la librería <a href="https://textbox.io/" target="_blank" rel="nofollow">textboxio</a> de ephox de acuerdo a estándar de ecosistema VALORA.</p>
 <p>El plugin registra una variable global de JavaScript para acceder a sus métodos. Esta variable global, denominada <strong>textboxValora</strong>, se encuentra disponible una vez que se haya cargado el plugin.</p>
 <p><strong>No es necesario tener cargada la librería de textboxio al momento de cargar el documento</strong>. El plugin identificará si existe la instancia. En caso no existir, intentará cargarla de manera dinámica. Para esto, la librería debe estar en la ruta predeterminada de plugins de ecosistema VALORA: <code><strong>/assets/vendor/plugins/textboxio/textboxio.js</strong></code></p>
@@ -153,6 +153,8 @@ Actualiza todos los elementos originales, con el contenido actual del editor, qu
 	var options = {
 		debug_mode : false,
 		toolbar : 'normal',
+    autoresize : false,
+    init_height : 200,
 		img_upload_url : '/default/subir-complemento/',
 		resize_uploaded_img : {
 			enabled: false,
@@ -190,6 +192,28 @@ Todas las propiedades son opcionales. Definir alguna sobreescribirá la opción 
         <p>
           <strong>"normal":</strong> (String) Crea el editor con una barra de herramientas normal (incluye upload de imágenes).
         </p>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <span style="color: rgb(0,0,0);">
+          <code>autoresize</code>
+        </span>
+      </td>
+      <td colspan="1">Boolean</td>
+      <td>
+        Permite habilitar o deshabilitar la opción de ajustar el alto de la caja del editor al ir escribiendo.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <span style="color: rgb(0,0,0);">
+          <code>init_height</code>
+        </span>
+      </td>
+      <td colspan="1">Number</td>
+      <td>
+        Indica el alto inicial que tendrá la caja del editor al cargarse por primera vez. El predeterminado es 200.
       </td>
     </tr>
     <tr>
@@ -263,3 +287,14 @@ Todas las propiedades son opcionales. Definir alguna sobreescribirá la opción 
 
 ## Problemas conocidos (Known Issues)
 - Ninguno en esta versión
+
+## Logs
+#### v0.3.5
+
+##### Mejoras
+- Es posible ahora especificar la variable <code>autoresize</code> la cual permite dar la habilidad al editor de aumentar el tamaño de la caja al ir escribiendo.
+- Se agrega variable <code>init_height</code> que permite especificar un alto de la caja del editor personalizado al iniciar la carga por primera vez.
+
+#### Corrección de errores
+- Se soluciona error en el alto de la caja del editor, que ocasionaba que en algunas instancias, quedara con un height muy pequeño.
+- Se corrige problema que sólo permitía al método <code>replace</code> trabajar con un <code>string</code> y no así un objeto.
