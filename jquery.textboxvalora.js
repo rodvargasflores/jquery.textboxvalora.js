@@ -1,5 +1,5 @@
 /*
-TextBox v0.3.5
+TextBox v0.3.6
 Plugin que sirve para precargar la librer√≠a textboxio de ephox de acuerdo a est√°ndar de ecosistema VALORA
 Autor: Real Ace One
 */
@@ -484,13 +484,19 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
 	/** COMENZAMOS FUNCIONES DEL PLUGIN **/
 	var v = {
 		get: function(selector) {
-			if (arguments.length == 0)
-				throw new Error(txt_miss_param.replace('%s','selector'));
+			// Validamos si existe instancia de textboxio cargada en el DOM
+			if (window.textboxio)
+			{
+				if (arguments.length == 0)
+					throw new Error(txt_miss_param.replace('%s','selector'));
 
-			if (typeof selector !== 'string')
-				throw new Error(txt_must_be_string.replace('%s','Selector'));
+				if (typeof selector !== 'string')
+					throw new Error(txt_must_be_string.replace('%s','Selector'));
 
-			return textboxio.get(selector);
+				return textboxio.get(selector);
+			}
+			else
+				return false;
 		},
 		triggerSave: function(selector) {
 			if (arguments.length == 0)
@@ -542,8 +548,9 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
 					}
 				});
 			}
-			else
-				throw new Error(txt_fail_load_editors_instance);
+			// No aplica ya que si no hay anda que guardar, no debe lanzar error
+			// else
+			// 	throw new Error(txt_fail_load_editors_instance);
 		},
 		replace: function(e,o) {
 			if (arguments.length == 0)

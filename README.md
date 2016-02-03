@@ -1,10 +1,8 @@
-# Plugin textboxValora v0.3.5
+# Plugin textboxValora v0.3.6
 <p>Plugin que sirve para precargar la librería <a href="https://textbox.io/" target="_blank" rel="nofollow">textboxio</a> de ephox de acuerdo a estándar de ecosistema VALORA.</p>
 <p>El plugin registra una variable global de JavaScript para acceder a sus métodos. Esta variable global, denominada <strong>textboxValora</strong>, se encuentra disponible una vez que se haya cargado el plugin.</p>
 <p><strong>No es necesario tener cargada la librería de textboxio al momento de cargar el documento</strong>. El plugin identificará si existe la instancia. En caso no existir, intentará cargarla de manera dinámica. Para esto, la librería debe estar en la ruta predeterminada de plugins de ecosistema VALORA: <code><strong>/assets/vendor/plugins/textboxio/textboxio.js</strong></code></p>
 <p>Requiere de JQuery1.10+ y librería <a href="https://textbox.io/" target="_blank" rel="nofollow">textboxio</a>.</p>
-
-## Readme en construcción
 
 ## Métodos
 <table>
@@ -114,7 +112,7 @@ Cuando se reemplaza un elemento <code>&lt;textarea&gt;</code> al interior de un 
         </span>
       </td>
       <td colspan="1">Objeto</td>
-      <td>Instancia única del editor.</td>
+      <td>Instancia única del editor</td>
     </tr>
   </tbody>
 </table>
@@ -142,6 +140,50 @@ Actualiza todos los elementos originales, con el contenido actual del editor, qu
 	Especifica un <a href="http://www.w3.org/TR/css3-selectors/" target="_blank" rel="nofollow">selector CSS3</a> <span>que representa el elemento o elementos que contienen instancias del editor.
 	</span>
       </td>
+    </tr>
+  </tbody>
+</table>
+
+## Get
+Retorna instancias del editor usando la función get(). Los elementos retornados por el selector son comparados con los editores activos y se retornará una instancia de aquel elemento que haya sido reemplazado por un editor.
+
+####Ejemplos<br>
+<strong>textboxValora.triggerSave(selector)</strong>
+```javascript
+  // Retorna todos los editores en cual el elemento original tenía la clase 'alpha'
+  var editors = textboxValora.get( '.alpha' );
+   
+  //  Identifica el primer editor del array retornado
+  var editor = editors[0];
+```
+#### Parámetros
+<table>
+  <tbody>
+    <tr>
+      <td>
+        <span style="color: rgb(0,0,0);"><code>selector</code></span>
+      </td>
+      <td colspan="1">
+        String
+      </td>
+      <td>
+  Especifica un <a href="http://www.w3.org/TR/css3-selectors/" target="_blank" rel="nofollow">selector CSS3</a> <span>que representa el elemento o elementos que contienen instancias del editor.
+  </span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+#### Return
+<table>
+  <tbody>
+    <tr>
+      <td>
+        <span style="color: rgb(0,0,0);">
+          <code><a href="http://docs.ephox.com/display/tbio/editor" target="_blank" rel="nofollow">textboxio.editor</a></code>
+        </span>
+      </td>
+      <td colspan="1">Array</td>
+      <td>Array con las instancias reemplazadas</td>
     </tr>
   </tbody>
 </table>
@@ -289,6 +331,12 @@ Todas las propiedades son opcionales. Definir alguna sobreescribirá la opción 
 - Ninguno en esta versión
 
 ## Logs
+#### v0.3.6
+
+##### Corrección de errores
+- Se soluciona error en el método get, el cual no preguntaba si existía la instancia del editor cargarda previamente en el DOM.
+- Se soluciona error en el método triggerSave, el cual retornaba error al no encontrar elemento para guardar.
+
 #### v0.3.5
 
 ##### Mejoras
