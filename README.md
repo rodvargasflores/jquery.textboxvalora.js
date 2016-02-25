@@ -1,4 +1,4 @@
-# Plugin textboxValora v0.3.6
+# Plugin textboxValora v0.4.0
 <p>Plugin que sirve para precargar la librería <a href="https://textbox.io/" target="_blank" rel="nofollow">textboxio</a> de ephox de acuerdo a estándar de ecosistema VALORA.</p>
 <p>El plugin registra una variable global de JavaScript para acceder a sus métodos. Esta variable global, denominada <strong>textboxValora</strong>, se encuentra disponible una vez que se haya cargado el plugin.</p>
 <p><strong>No es necesario tener cargada la librería de textboxio al momento de cargar el documento</strong>. El plugin identificará si existe la instancia. En caso no existir, intentará cargarla de manera dinámica. Para esto, la librería debe estar en la ruta predeterminada de plugins de ecosistema VALORA: <code><strong>/assets/vendor/plugins/textboxio/textboxio.js</strong></code></p>
@@ -331,6 +331,11 @@ Todas las propiedades son opcionales. Definir alguna sobreescribirá la opción 
 - Ninguno en esta versión
 
 ## Logs
+#### v0.4.0
+
+##### Mejoras
+- Se agrega, al método triggerSave, habilidad de limpiar saltos de línea al estar editor vacío y que luego se traspasaban al elemento original.
+
 #### v0.3.6
 
 ##### Corrección de errores

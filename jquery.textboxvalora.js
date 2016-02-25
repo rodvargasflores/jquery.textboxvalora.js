@@ -1,5 +1,5 @@
 /*
-TextBox v0.3.6
+TextBox v0.4.0
 Plugin que sirve para precargar la librería textboxio de ephox de acuerdo a estándar de ecosistema VALORA
 Autor: Real Ace One
 */
@@ -517,7 +517,8 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer�
 							var content = e.content.get();
 							if (/TEXTAREA/i.test(container.nodeName))
 							{
-								container.innerHTML = content;
+								// Aplicamos replace para limpiar los saltos de línea en caso de iniciarse o guardarse vacío
+								container.innerHTML = content.replace(/^(<p[^>]*>(&nbsp;|&#160;|\s|\u00a0|)*<br \/>*[\r\n]*<\/p>*)$/,'');
 							
 								if (settings.debug_mode)
 								{
