@@ -122,6 +122,16 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
 	                            items: [ 'undo', 'redo' ]
 	                        },
 	                        {
+	                            label: 'Insert group',
+	                            items: [
+	                                { 
+	                                    id    : 'insert',
+	                                    label  : 'Insertar',
+	                                    items : [ 'link' ]
+	                                }
+	                            ]
+	                        },
+	                        {
 	                            label: 'Emphasis group',
 	                            items: [ 'bold', 'italic', 'underline' ]
 	                        },
@@ -148,7 +158,7 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
 	                                { 
 	                                    id    : 'insert',
 	                                    label  : 'Insertar',
-	                                    items : [ 'fileupload', 'table', 'specialchar', 'hr' ]
+	                                    items : [ 'link', 'fileupload', 'table', 'specialchar', 'hr' ]
 	                                }
 	                            ]
 	                        },
