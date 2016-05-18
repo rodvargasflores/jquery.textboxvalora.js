@@ -1,5 +1,5 @@
 /*
-TextBox v0.4.0
+TextBox v0.5.0
 Plugin que sirve para precargar la librer√≠a textboxio de ephox de acuerdo a est√°ndar de ecosistema VALORA
 Autor: Real Ace One
 */
@@ -29,6 +29,7 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
 	var txt_success_file_upload			= 'Se carg√≥ el archivo en el servidor con ruta de acceso "%s"';
 	var txt_element_save_not_allowed 	= 'El elemento en que se intenta guardar el contenido del editor no est√° permitido.';
 	var txt_element_not_allowed 		= 'S√≥lo se permiten elementos de tipo DIV o TEXTAREA.';
+	var txt_loading_editor_plugin 		= 'Cargando editor, por favor espere...';
 
 	/** Rutas de librer√≠as **/
 	var textboxio_url 					= '/assets/vendor/plugins/textboxio/textboxio.js';
@@ -51,30 +52,37 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
 
 	var getDefaults = function() {
 		var d = {
-			debug_mode : false,
-			toolbar : 'normal',
-			autoresize : false,
-			init_height : 200,
-			img_upload_url : '/default/subir-complemento/',
+			debug_mode 			: false,
+			toolbar 			: 'normal',
+			autoresize 			: false,
+			init_height 		: 200,
+			img_upload_url 		: '/default/subir-complemento/',
 			img_upload_response : {
 				success: function(json, textStatus, jqXHR){},
 				fail: function(jqXHR, textStatus, errorThrown){}
 			},
 			resize_uploaded_img : {
-				enabled : false,
-				maxWidth : 600,
-				maxHeight : 600
+				enabled 		: false,
+				maxWidth 		: 600,
+				maxHeight 		: 600
 			},
-			config : {
-	            codeview: {
-	                enabled : false,
-	                showButton: false
+			show_loading_text 	: {
+				enabled 		: true,
+				text 			: txt_loading_editor_plugin,
+				icon 			: 'fa-spinner',
+				cclass 			: 'form-control-static',
+				style 			: 'margin:0px!important;'
+			},
+			config 				: {
+	            codeview 		: {
+	                enabled 	: false,
+	                showButton	: false
 	            },
-	            autosubmit : true,
-	            basePath : textboxio_basePath,
-	            images: {
-	                allowLocal: true,
-	                upload : {
+	            autosubmit 		: true,
+	            basePath 		: textboxio_basePath,
+	            images 			: {
+	                allowLocal	: true,
+	                upload 		: {
 	                    handler : function (data, success, failure) {
 	                        uploadEditorHandler(data.blob(), data.filename(), function(jqxhr){
 	                            // jqxhr.then ??
@@ -434,6 +442,25 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
         return new Blob([uInt8Array], {type: contentType});
     }
 
+    var showLoadingText = function(e) {
+    	// Ocultamos el elemento original
+    	e.hide();
+
+    	e.each(function(i,v){
+    		$(v).parent().append(''+
+    			'<label class="loadingTextboxValora '+settings.show_loading_text['cclass']+'" style="'+settings.show_loading_text['style']+'"><i class="fa fa-spin '+settings.show_loading_text['icon']+'"></i> '+settings.show_loading_text['text']+'</label>'+
+    		'');
+    	});
+    }
+
+    var hideLoadingText = function(e) {
+
+    	$('.loadingTextboxValora').remove();
+
+    	// Volvemos a mostrar el elemento original
+    	e.show();
+    }
+
 	var ephox_plugin_loader = function() {
 		// Si no hemos iniciado a√∫n la carga el JS
 		if (!loadingScript)
@@ -594,6 +621,9 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
 					if (settings.debug_mode) debug(txt_library_not_found);
 
 					ephox_plugin_loader();
+
+					if (settings.show_loading_text['enabled'])
+						showLoadingText(e);
 					
 					// Aplicamos un timer para saber que se carga una sola vez el ajax. Esto es porque el param async
 					// del ajax va true. False est√° deprecado y genera warning en la consola.
@@ -607,6 +637,10 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
 							}
 
 							clearInterval(timerScript);
+
+							if (settings.show_loading_text['enabled'])
+								hideLoadingText(e);
+
 							buildEditor(e);
 						}
 					}, 1000);
