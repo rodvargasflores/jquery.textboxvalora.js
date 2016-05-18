@@ -1,4 +1,4 @@
-# Plugin textboxValora v0.4.0
+# Plugin textboxValora v0.5.0
 <p>Plugin que sirve para precargar la librería <a href="https://textbox.io/" target="_blank" rel="nofollow">textboxio</a> de ephox de acuerdo a estándar de ecosistema VALORA.</p>
 <p>El plugin registra una variable global de JavaScript para acceder a sus métodos. Esta variable global, denominada <strong>textboxValora</strong>, se encuentra disponible una vez que se haya cargado el plugin.</p>
 <p><strong>No es necesario tener cargada la librería de textboxio al momento de cargar el documento</strong>. El plugin identificará si existe la instancia. En caso no existir, intentará cargarla de manera dinámica. Para esto, la librería debe estar en la ruta predeterminada de plugins de ecosistema VALORA: <code><strong>/assets/vendor/plugins/textboxio/textboxio.js</strong></code></p>
@@ -41,19 +41,19 @@ Cuando se reemplaza un elemento <code>&lt;textarea&gt;</code> al interior de un 
 ####Ejemplos<br>
 <strong>textboxValora.replace(selector, [configuración])</strong>
 ```javascript
-	<div id="replaceMe">Contenido</div>
-	...
-	// Crea un editor buscando el elemento con id 'replaceMe'
-	var simpleEditor = textboxValora.replace( '#replaceMe' );
+  <div id="replaceMe">Contenido</div>
+  ...
+  // Crea un editor buscando el elemento con id 'replaceMe'
+  var simpleEditor = textboxValora.replace( '#replaceMe' );
 ```
 
 <strong>textboxValora.replace(elemento, [configuración])</strong>
 ```javascript
-	<div id="replaceMe">Contenido</div>
-	...
-	// Crea un editor reemplazando un elemento específico
-	var div = document.getElementById('replaceMe');
-	var simpleEditor = textboxValora.replace( div );
+  <div id="replaceMe">Contenido</div>
+  ...
+  // Crea un editor reemplazando un elemento específico
+  var div = document.getElementById('replaceMe');
+  var simpleEditor = textboxValora.replace( div );
  ```
 #### Parámetros
 <table>
@@ -123,8 +123,8 @@ Actualiza todos los elementos originales, con el contenido actual del editor, qu
 ####Ejemplos<br>
 <strong>textboxValora.triggerSave(selector)</strong>
 ```javascript
-	// Actualiza todos los elementos originales que coincidan con la clase css 'editores'
-	textboxValora.triggerSave( '.editores' );
+  // Actualiza todos los elementos originales que coincidan con la clase css 'editores'
+  textboxValora.triggerSave( '.editores' );
 ```
 #### Parámetros
 <table>
@@ -137,8 +137,8 @@ Actualiza todos los elementos originales, con el contenido actual del editor, qu
         String
       </td>
       <td>
-	Especifica un <a href="http://www.w3.org/TR/css3-selectors/" target="_blank" rel="nofollow">selector CSS3</a> <span>que representa el elemento o elementos que contienen instancias del editor.
-	</span>
+  Especifica un <a href="http://www.w3.org/TR/css3-selectors/" target="_blank" rel="nofollow">selector CSS3</a> <span>que representa el elemento o elementos que contienen instancias del editor.
+  </span>
       </td>
     </tr>
   </tbody>
@@ -192,18 +192,29 @@ Retorna instancias del editor usando la función get(). Los elementos retornados
 ####Ejemplos<br>
 <strong>Valores por defecto</strong>
 ```javascript
-	var options = {
-		debug_mode : false,
-		toolbar : 'normal',
-    autoresize : false,
-    init_height : 200,
-		img_upload_url : '/default/subir-complemento/',
-		resize_uploaded_img : {
-			enabled: false,
-			maxWidth: 600,
-			maxHeight: 600
-		}
-	}
+  var options = {
+    debug_mode          : false,
+    toolbar             : 'normal',
+    autoresize          : false,
+    init_height         : 200,
+    img_upload_url      : '/default/subir-complemento/',
+    img_upload_response : {
+      success           : function(json, textStatus, jqXHR){},
+      fail              : function(jqXHR, textStatus, errorThrown){}
+    },
+    resize_uploaded_img : {
+      enabled           : false,
+      maxWidth          : 600,
+      maxHeight         : 600
+    },
+    show_loading_text   : {
+      enabled           : true,
+      text              : txt_loading_editor_plugin,
+      icon              : 'fa-spinner',
+      cclass            : 'form-control-static',
+      style             : 'margin:0px!important;'
+    }
+  }
 ```
 #### Propiedades del objeto
 Todas las propiedades son opcionales. Definir alguna sobreescribirá la opción predeterminada del plugin.
@@ -270,7 +281,7 @@ Todas las propiedades son opcionales. Definir alguna sobreescribirá la opción 
           URL donde se enviará el archivo para guardarlo en el servidor. Es un ajax de tipo JSON y envía dos parámetros, uno de tipo <code><strong>File</strong></code> y el segundo es un <code><strong>String</strong></code> con el nombre del archivo enviado. El nombre de los parámetros son <code><strong>file</strong></code> y <code><strong>name</strong></code> respectivamente.
         </p>
         <p>
-        	<strong>El retorno debe ser un JSON con los siguientes parámetros:</strong>
+          <strong>El retorno debe ser un JSON con los siguientes parámetros:</strong>
         </p>
         <p>
           <strong>"result":</strong> (Boolean) Permite identificar si la carga del archivo fue exitosa
@@ -324,13 +335,48 @@ Todas las propiedades son opcionales. Definir alguna sobreescribirá la opción 
         </p>
       </td>
     </tr>
+    <tr>
+      <td>
+        <span style="color: rgb(0,0,0);">
+          <code>show_loading_text</code>
+        </span>
+      </td>
+      <td colspan="1">Objeto</td>
+      <td>
+        <p>
+          Permite mostrar texto de cargando en caso de que la librería original de textboxio no exista en el DOM. De manera predeterminada, la opción viene habilitada.
+        </p>
+        <p>
+          <strong>"enabled":</strong> (Boolean) Habilita o deshabilita la opción de redimensionar. Predeterminado es true.
+        </p>
+        <p>
+          <strong>"text":</strong> (String) Modifica el mensaje de cargando predeterminado.
+        </p>
+        <p>
+          <strong>"icon":</strong> (String) Permite especificar el icono que llevará el mensaje. Predeterminado es fa-spinner.
+        </p>
+        <p>
+          <strong>"cclass":</strong> (String) Especifica la clase del contenedor del mensaje. Predeterimando es un label con clase form-contro-static.
+        </p>
+        <p>
+          <strong>"style":</strong> (String) Permite asignar estilos personalizados al tag label del mensaje. Predeterminado es margin: 0px.
+        </p>
+      </td>
+    </tr>
   </tbody>
 </table>
 
 ## Problemas conocidos (Known Issues)
-- Ninguno en esta versión
+- Al cargar una imagen en el editor, lleva a una URL predeterminada en caso de no especificar. Esto hace que el request a través del ajax, muestre error en consola por la ruta inexistente.
+- De vez en cuando, cuando se habilita la opción de <code>autoresize</code>, el alto del editor repetidamente aumenta y disminuye.
+- Clase required en elemento original, no es tomada en cuenta al ocupar la validación de jquery validation.
 
 ## Logs
+#### v0.5.0
+
+##### Mejoras
+- Se habilita opción, a través de variable <code>show_loading_text</code>, para mostrar mensaje de cargando editor.
+
 #### v0.4.0
 
 ##### Mejoras
