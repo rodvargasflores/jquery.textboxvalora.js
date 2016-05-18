@@ -1,5 +1,5 @@
 /*
-TextBox v0.5.0
+TextBox v0.5.0.1
 Plugin que sirve para precargar la librería textboxio de ephox de acuerdo a estándar de ecosistema VALORA
 Autor: Real Ace One
 */
@@ -29,7 +29,7 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer�
 	var txt_success_file_upload			= 'Se cargó el archivo en el servidor con ruta de acceso "%s"';
 	var txt_element_save_not_allowed 	= 'El elemento en que se intenta guardar el contenido del editor no está permitido.';
 	var txt_element_not_allowed 		= 'Sólo se permiten elementos de tipo DIV o TEXTAREA.';
-	var txt_loading_editor_plugin 		= 'Cargando editor, por favor espere...';
+	var txt_loading_editor_plugin 		= 'Cargando información...';
 
 	/** Rutas de librerías **/
 	var textboxio_url 					= '/assets/vendor/plugins/textboxio/textboxio.js';
