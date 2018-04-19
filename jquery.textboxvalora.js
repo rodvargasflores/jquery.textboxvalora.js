@@ -56,7 +56,7 @@ if (!window.jQuery === 'undefined') { throw new Error('Cargue primero la librer√
 			toolbar 			: 'normal',
 			autoresize 			: false,
 			init_height 		: 200,
-			img_upload_url 		: '/default/subir-complemento/',
+			img_upload_url 		: '/default/index/subir-complemento/',
 			img_upload_response : {
 				success: function(json, textStatus, jqXHR){},
 				fail: function(jqXHR, textStatus, errorThrown){}
