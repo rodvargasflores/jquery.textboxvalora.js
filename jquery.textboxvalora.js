@@ -1,5 +1,5 @@
 /*
-TextBox v0.5.0.1
+TextBox v0.6.0.0
 Plugin que sirve para precargar la librería textboxio de ephox de acuerdo a estándar de ecosistema VALORA
 Autor: Real Ace One
 */
